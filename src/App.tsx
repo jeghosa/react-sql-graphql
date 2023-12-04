@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component} from 'react'
+import {BrowserRouter as Router,Routes,Route,useNavigate } from "react-router-dom"
+import {ApolloClient, InMemoryCache, ApolloProvider} from "@apollo/client"
+import Signup from "./Signup"
+import Login from "./Login"
+import Posts from "./Posts"
+import Wrapper from './Wrapper'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export const client= new ApolloClient({uri:"http://localhost:4000/graphql",
+cache:new InMemoryCache({typePolicies:
+  {Query:{fields
+:{users:{merge(existing,incoming){return incoming}},
+posts:{merge(existing,incoming){return incoming}}}}}})})
+ 
+//  export default class App extends Component {
+//   state:any={word:"hello"}
+//    render() {
+//      return (
+//       <ApolloProvider client={client}>
+//       <Router>
+//         <Routes> 
+//         <Route path="/" element={<Signup {...this.state} cred={"welcome!"}/>}>
+//         </Route> 
+//         <Route path="/Posts" element={<Posts/>}>
+//         </Route> 
+//         <Route path="/Login" element={<Login/>}>
+//         </Route> 
+//        </Routes>
+//      </Router>
+//      </ApolloProvider>
+//      )
+//    }
+//  }
+ 
 
-export default App;
+
+// import React from 'react'
+ 
+ export default function App() {
+  const navigate:any= useNavigate()
+   return (
+      <ApolloProvider client={client}>
+      {/* <Router> */}
+        <Routes> 
+        <Route path="/" element={<Signup />}>
+        </Route> 
+        <Route path="/Posts" element={<Posts/>}>
+        </Route> 
+        <Route path="/Login" element={<Wrapper>{(navigate:any)=><Login navigate={navigate} />}</Wrapper>}>
+        </Route> 
+       </Routes>
+     {/* </Router> */}
+     </ApolloProvider>
+     )
+ }
+ 
